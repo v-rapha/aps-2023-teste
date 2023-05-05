@@ -4,19 +4,17 @@ import dados.CursoDados;
 import dados.Dados;
 import dao.AlunoDAO;
 import dao.CursoDAO;
-import entidades.Aluno;
-import entidades.Curso;
-import entidades.Nivel;
+import entidades.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class View {
   AlunoDAO alunoDAO;
   CursoDAO cursoDAO;
   Dados dados;
   CursoDados cursoDados;
+  Collection<Aluno> r;
+  Collection<Curso> r2;
 
   public View() {
     this.dados = new Dados();
@@ -28,6 +26,10 @@ public class View {
   public void init(){
     alunoDAO.loadAlunos();
     cursoDAO.loadCursos();
+    r = dados.getAlunos();
+    r2 = cursoDados.getCursos();
+    System.out.println("---------------" + r);
+    System.out.println("---------------" + r2);
     controller();
   }
 
@@ -43,9 +45,98 @@ public class View {
         case 5: adicionaCurso(); break;
         case 6: listaTodosCursos(); break;
         case 7: listaCursosByAno(); break;
+        case 8: adicionaRendimentoGrad(); break;
+        case 9: adicionaRendimentoPos(); break;
         case 0: sair(); break;
       }
     } while(opcao != 0);
+  }
+
+  public void adicionaRendimentoGrad() {
+    Scanner in = new Scanner(System.in);
+    //Iterator<Curso> collection = r2.iterator();
+    //List<Curso> cursosList = new ArrayList<>();
+    String idAluno = entraId();
+
+    Aluno aluno = dados.getAlunoById(idAluno);
+
+    /*while (collection.hasNext()) {
+      Curso curso = collection.next();
+      Nivel getNivel = curso.getNivel();
+      if(getNivel.equals(Nivel.GRADUACAO)) {
+        cursosList.add(curso);
+      }
+    }*/
+    System.out.println("Aluno selecionado: " + aluno.getNome());
+    System.out.println("Selecione o curso");
+
+    String nome = entraNomeCurso();
+    Nivel nivel = entraNivelCurso();
+    int ano = entraAnoCurso();
+
+    Curso curso = cursoDados.getCursoByProperties(nome, nivel, ano);
+    if (curso == null) {
+      System.out.println("Curso não encontrado");
+      return;
+    }
+    if (!(curso.getNivel().equals(Nivel.GRADUACAO))) {
+      System.out.println("Nível inválido");
+      return;
+    }
+
+    System.out.println("Entre com a Np1");
+    double np1 = in.nextDouble();
+    System.out.println("Entre com a Np2");
+    double np2 = in.nextDouble();
+    System.out.println("Entre com a reposição");
+    double repo = in.nextDouble();
+    System.out.println("Entre com o exame");
+    double exame = in.nextDouble();
+
+    System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
+    System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
+    Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
+    //System.out.println(aluno);
+    /*for (int i=0; i<r.size(); i++) {
+      System.out.println(r[i]);
+    }*/
+  }
+
+  public void adicionaRendimentoPos() {
+    Scanner in = new Scanner(System.in);
+    String idAluno = entraId();
+
+    Aluno aluno = dados.getAlunoById(idAluno);
+
+    System.out.println("Aluno selecionado: " + aluno.getNome());
+    System.out.println("Selecione o curso");
+
+    String nome = entraNomeCurso();
+    Nivel nivel = entraNivelCurso();
+    int ano = entraAnoCurso();
+
+    Curso curso = cursoDados.getCursoByProperties(nome, nivel, ano);
+    if (curso == null) {
+      System.out.println("Curso não encontrado");
+      return;
+    }
+    if (!(curso.getNivel().equals(Nivel.POS_GRADUACAO))) {
+      System.out.println("Nível inválido");
+      return;
+    }
+
+    System.out.println("Entre com a Np1");
+    double np1 = in.nextDouble();
+    System.out.println("Entre com a Np2");
+    double np2 = in.nextDouble();
+    System.out.println("Entre com a reposição");
+    double repo = in.nextDouble();
+    System.out.println("Entre com o exame");
+    double exame = in.nextDouble();
+
+    System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
+    System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
+    PosGraduacao graduacao = new PosGraduacao(aluno, curso, np1, np2, repo, exame);
   }
 
   public void adicionaCurso() {
@@ -134,6 +225,8 @@ public class View {
     System.out.println("5 - Para adicionar Curso");
     System.out.println("6 - Listar todos cursos");
     System.out.println("7 - encontrar curso pelo ano");
+    System.out.println("8 - adicionaRendimentoGrad()");
+    System.out.println("9 - adicionaRendimentoPos()");
     System.out.println("0 - para sair do programa");
     System.out.println("-----------------------");
 

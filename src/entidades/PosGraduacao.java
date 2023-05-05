@@ -1,42 +1,34 @@
 package entidades;
 
-public class PosGraduacao implements Rendimento {
-  private double np1, np2, reposicao, exame, media;
-  private boolean aprovado;
-
-  public PosGraduacao(double np1, double np2, double reposicao, double exame) {
+public class PosGraduacao extends Rendimento {
+  private Aluno aluno;
+  private Curso curso;
+  private double np1, np2, reposicao, exame;
+  public PosGraduacao(Aluno aluno, Curso curso, double np1, double np2, double reposicao, double exame) {
+    this.aluno = aluno;
+    this.curso = curso;
     this.np1 = np1;
     this.np2 = np2;
     this.reposicao = reposicao;
     this.exame = exame;
   }
   @Override
-  public double calculaMedia() {
-    //double maiorNota = 0;
-    double mediaInicial = 0;
-    double mediaFinal = 0;
-
-    if (this.reposicao > this.np1) {
-      //maiorNota = reposicao;
-      mediaInicial = (reposicao + np2) / 2;
-    } else if (this.reposicao > this.np2) {
-      //maiorNota = reposicao;
-      mediaInicial = (np1 + reposicao) / 2;
+  public void calcularMedia(double notaNP1, double notaNP2, double notaSub, double notaExame, boolean graduacao) {
+    double menorNota = Math.min(notaNP1, notaNP2);
+    if (notaSub > menorNota) {
+      menorNota = notaSub;
     }
+    double mediaInicial = (notaNP1 + notaNP2 - menorNota) / 2.0;
 
-    if (mediaInicial >= 5) {
-      this.media = mediaInicial;
-      this.aprovado = true;
+    if (mediaInicial >= 5.0) {
+      media = mediaInicial;
+      //aprovado = true;
     } else {
-      mediaFinal = (mediaInicial + this.exame) / 2;
-      if (mediaFinal >= 5) {
-        this.media = mediaFinal;
-        this.aprovado = true;
-      } else {
-        this.media = mediaFinal;
-        this.aprovado = false;
+      double mediaFinal = (mediaInicial + notaExame) / 2.0;
+      if (mediaFinal >= 5.0) {
+        media = 5.0;
+        //aprovado = true;
       }
     }
-    return 0;
   }
 }

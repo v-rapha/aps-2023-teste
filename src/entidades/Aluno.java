@@ -1,12 +1,17 @@
 package entidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Aluno {
   private String id;
   private String nome;
+  private List<Rendimento> rendimentos;
 
   public Aluno(String id, String nome) {
     this.id = id;
     this.nome = nome;
+    this.rendimentos = new ArrayList<>();
   }
 
   public String getId() {

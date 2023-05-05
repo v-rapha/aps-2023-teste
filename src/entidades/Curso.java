@@ -1,14 +1,19 @@
 package entidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Curso {
   private String nome;
   private Nivel nivel;
   private int ano;
+  private List<Aluno> alunos;
 
   public Curso(String nome, Nivel nivel, int ano) {
     this.nome = nome;
     this.nivel = nivel;
     this.ano = ano;
+    this.alunos = new ArrayList<>();
   }
 
   public String getNome() {
@@ -33,6 +38,16 @@ public class Curso {
 
   public void setAno(int ano) {
     this.ano = ano;
+  }
+
+  // Adiciona um aluno ao curso
+  public void addAluno(Aluno aluno) {
+    this.alunos.add(aluno);
+  }
+
+  // Retorna a lista de alunos que cursaram o curso
+  public List<Aluno> getAlunos() {
+    return this.alunos;
   }
 
   @Override
