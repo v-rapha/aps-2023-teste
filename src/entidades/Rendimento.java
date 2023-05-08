@@ -6,12 +6,21 @@ import java.util.List;
 public abstract class Rendimento {
   private Aluno aluno;
   private Curso curso;
-  private double nota;
+  private double nota, np1, np2, reposicao, exame;
   private boolean aprovado;
 
   protected double media;
 
   public Rendimento() {}
+
+  public Rendimento(Aluno aluno, Curso curso, double np1, double np2, double reposicao, double exame) {
+    this.aluno = aluno;
+    this.curso = curso;
+    this.np1 = np1;
+    this.np2 = np2;
+    this.reposicao = reposicao;
+    this.exame = exame;
+  }
 
   public Rendimento(Aluno aluno, Curso curso, double nota, boolean aprovado) {
     this.aluno = aluno;
@@ -36,12 +45,52 @@ public abstract class Rendimento {
     this.curso = curso;
   }
 
+  public double getNota() {
+    return nota;
+  }
+
+  public void setNota(double nota) {
+    this.nota = nota;
+  }
+
+  public double getNp1() {
+    return np1;
+  }
+
+  public void setNp1(double np1) {
+    this.np1 = np1;
+  }
+
+  public double getNp2() {
+    return np2;
+  }
+
+  public void setNp2(double np2) {
+    this.np2 = np2;
+  }
+
+  public double getReposicao() {
+    return reposicao;
+  }
+
+  public void setReposicao(double reposicao) {
+    this.reposicao = reposicao;
+  }
+
+  public double getExame() {
+    return exame;
+  }
+
+  public void setExame(double exame) {
+    this.exame = exame;
+  }
+
   public boolean isAprovado() {
     return aprovado;
   }
 
-  public double getMedia() {
-    return media;
+  public void setAprovado(boolean aprovado) {
+    this.aprovado = aprovado;
   }
 
   public abstract void calcularMedia(
@@ -49,12 +98,13 @@ public abstract class Rendimento {
 
   @Override
   public String toString() {
-    return "Rendimento{" +
-            "aluno=" + aluno +
-            ", curso=" + curso +
-            ", nota=" + nota +
-            ", aprovado=" + aprovado +
-            '}';
+    return this.aluno +"," +
+            this.curso +"," +
+            this.np1 +"," +
+            this.np2 +"," +
+            this.reposicao +"," +
+            this.exame +"," +
+            this.aprovado;
   }
 
   /*public double calculaMedia() {

@@ -4,13 +4,16 @@ public class PosGraduacao extends Rendimento {
   private Aluno aluno;
   private Curso curso;
   private double np1, np2, reposicao, exame;
+  private boolean aprovado;
+
   public PosGraduacao(Aluno aluno, Curso curso, double np1, double np2, double reposicao, double exame) {
-    this.aluno = aluno;
+    super(aluno, curso, np1, np2, reposicao, exame);
+    /*this.aluno = aluno;
     this.curso = curso;
     this.np1 = np1;
     this.np2 = np2;
     this.reposicao = reposicao;
-    this.exame = exame;
+    this.exame = exame;*/
   }
   @Override
   public void calcularMedia(double notaNP1, double notaNP2, double notaSub, double notaExame, boolean graduacao) {
@@ -21,13 +24,16 @@ public class PosGraduacao extends Rendimento {
     double mediaInicial = (notaNP1 + notaNP2 - menorNota) / 2.0;
 
     if (mediaInicial >= 5.0) {
-      media = mediaInicial;
-      //aprovado = true;
+      this.media = mediaInicial;
+      this.aprovado = true;
     } else {
       double mediaFinal = (mediaInicial + notaExame) / 2.0;
       if (mediaFinal >= 5.0) {
-        media = 5.0;
-        //aprovado = true;
+        this.media = 5.0;
+        this.aprovado = true;
+      } else {
+        this.media = mediaFinal;
+        this.aprovado = false;
       }
     }
   }

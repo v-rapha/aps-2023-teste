@@ -2,8 +2,10 @@ package view;
 
 import dados.CursoDados;
 import dados.Dados;
+import dados.RendimentoDados;
 import dao.AlunoDAO;
 import dao.CursoDAO;
+import dao.RendimentoDAO;
 import entidades.*;
 
 import java.util.*;
@@ -13,14 +15,18 @@ public class View {
   CursoDAO cursoDAO;
   Dados dados;
   CursoDados cursoDados;
+  RendimentoDados rendimentoDados;
   Collection<Aluno> r;
   Collection<Curso> r2;
+  private RendimentoDAO rendimentoDAO;
 
   public View() {
     this.dados = new Dados();
     this.cursoDados = new CursoDados();
+    this.rendimentoDados = new RendimentoDados();
     this.alunoDAO = new AlunoDAO("files/alunos.csv", this.dados);
     this.cursoDAO = new CursoDAO("files/cursos.csv", this.cursoDados);
+    this.rendimentoDAO = new RendimentoDAO(this.rendimentoDados);
   }
 
   public void init(){
@@ -28,8 +34,8 @@ public class View {
     cursoDAO.loadCursos();
     r = dados.getAlunos();
     r2 = cursoDados.getCursos();
-    System.out.println("---------------" + r);
-    System.out.println("---------------" + r2);
+    //System.out.println("---------------" + r);
+    //System.out.println("---------------" + r2);
     controller();
   }
 
@@ -54,19 +60,14 @@ public class View {
 
   public void adicionaRendimentoGrad() {
     Scanner in = new Scanner(System.in);
-    //Iterator<Curso> collection = r2.iterator();
-    //List<Curso> cursosList = new ArrayList<>();
     String idAluno = entraId();
 
     Aluno aluno = dados.getAlunoById(idAluno);
+    if (aluno == null) {
+      System.out.println("Aluno não encontrado");
+      return;
+    }
 
-    /*while (collection.hasNext()) {
-      Curso curso = collection.next();
-      Nivel getNivel = curso.getNivel();
-      if(getNivel.equals(Nivel.GRADUACAO)) {
-        cursosList.add(curso);
-      }
-    }*/
     System.out.println("Aluno selecionado: " + aluno.getNome());
     System.out.println("Selecione o curso");
 
@@ -93,13 +94,20 @@ public class View {
     System.out.println("Entre com o exame");
     double exame = in.nextDouble();
 
-    System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
-    System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
-    Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
-    //System.out.println(aluno);
-    /*for (int i=0; i<r.size(); i++) {
-      System.out.println(r[i]);
+    //System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
+    //System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
+    /*Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
+    if(graduacaoDados.addGraduacao(graduacao)) {
+      System.out.println("Adicionando graduacao " + graduacao);
+    } else {
+      System.out.println("Falha ao adicionar graduacao " + graduacao);
     }*/
+    Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
+    if(rendimentoDados.addRendimento(graduacao)) {
+      System.out.println("Adicionando graduacao " + graduacao);
+    } else {
+      System.out.println("Falha ao adicionar graduacao " + graduacao);
+    }
   }
 
   public void adicionaRendimentoPos() {
@@ -134,9 +142,15 @@ public class View {
     System.out.println("Entre com o exame");
     double exame = in.nextDouble();
 
-    System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
-    System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
-    PosGraduacao graduacao = new PosGraduacao(aluno, curso, np1, np2, repo, exame);
+    //System.out.println("Curso selecionado: " + curso.getNome() + " | " + curso.getAno());
+    //System.out.println("np1 " + np1 + "np2 " + np2 + "repo " + repo + "exame " + exame);
+    //PosGraduacao posGraduacao = new PosGraduacao(aluno, curso, np1, np2, repo, exame);
+    PosGraduacao posGraduacao = new PosGraduacao(aluno, curso, np1, np2, repo, exame);
+    if(rendimentoDados.addRendimento(posGraduacao)) {
+      System.out.println("Adicionando posGraduacao " + posGraduacao);
+    } else {
+      System.out.println("Falha ao adicionar posGraduacao " + posGraduacao);
+    }
   }
 
   public void adicionaCurso() {
@@ -195,14 +209,29 @@ public class View {
     System.out.println("Entre com o nome do Curso");
     Scanner in = new Scanner(System.in);
     String nome = in.nextLine();
-    return nome.trim();
+    return nome.trim().toUpperCase();
   }
 
   private Nivel entraNivelCurso() {
-    System.out.println("Entre com o nível do curso (GRADUACAO ou POS_GRADUACAO)");
-    Scanner in = new Scanner(System.in);
-    String nivelIn = in.nextLine();
-    Nivel nivel = Nivel.valueOf(nivelIn.toUpperCase().trim());
+    Nivel nivel = null;
+    boolean entradaValida = false;
+
+    do {
+      try {
+        System.out.println("Entre com o nível do curso (GRADUACAO ou POS_GRADUACAO)");
+        Scanner in = new Scanner(System.in);
+        String nivelIn = in.nextLine().toUpperCase().trim();
+        nivel = Nivel.valueOf(nivelIn);
+        if (nivel.equals(Nivel.GRADUACAO) || nivel.equals(Nivel.POS_GRADUACAO)) {
+          entradaValida = true;
+        } else {
+          System.out.println("Nível inválido, tente novamente.");
+        }
+      } catch (IllegalArgumentException e) {
+        System.out.println("Entrada inválida, tente novamente.");
+      }
+    } while (!entradaValida);
+
     return nivel;
   }
 
@@ -247,6 +276,7 @@ public class View {
     System.out.println("salvando alunos");
     alunoDAO.saveAlunos();
     cursoDAO.saveCursos();
+    rendimentoDAO.saveGraduacoes();
   }
 
   public void adicionaAluno() {
@@ -322,7 +352,7 @@ public class View {
 
     String id = in.nextLine();
 
-    return id.trim();
+    return id.trim().toUpperCase();
   }
 
   public String entraNome() {

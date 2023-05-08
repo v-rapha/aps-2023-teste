@@ -3,6 +3,9 @@ package dados;
 import entidades.Curso;
 import entidades.Nivel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class CursoDados {
@@ -20,6 +23,10 @@ public class CursoDados {
 
     return true;
   }
+
+  /*public void addCursoWithAluno(String idAluno, double np1, double np2, double repo, double exame) {
+
+  }*/
 
   public Collection<Curso> getCursos() {
     return this.cursos;
