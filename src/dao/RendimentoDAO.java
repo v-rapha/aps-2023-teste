@@ -48,15 +48,22 @@ public class RendimentoDAO {
     System.out.println(rendimentoDados.getRendimentos());
     String path = "";
     for(Rendimento gs: rendimentoDados.getRendimentos()) {
-      path = gs.getCurso().getNome().toUpperCase() + "_" +
+      path = "files/" + gs.getCurso().getNome() + "_" +
               gs.getCurso().getNivel() + "_" +
-              gs.getCurso().getAno();
+              gs.getCurso().getAno() + ".csv";
       System.out.println(path);
-      try (OutputStream os = new FileOutputStream("files/" + path + ".csv");
+      try (OutputStream os = new FileOutputStream(path, true);
            OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-           PrintWriter pw = new PrintWriter(osw, true)) {
+           BufferedWriter bw = new BufferedWriter(osw)) {
 
-        pw.println(gs.getAluno().getId() + "," + gs.getNp1() + "," + gs.getNp2() + "," + gs.getReposicao() + "," + gs.getExame());
+        //pw.println(gs.getAluno().getId() + "," + gs.getNp1() + "," + gs.getNp2() + "," + gs.getReposicao() + "," + gs.getExame());
+        String line = gs.getAluno().getId() + "," +
+                      gs.getNp1() + "," +
+                      gs.getNp2() + "," +
+                      gs.getReposicao() + "," +
+                      gs.getExame();
+        bw.write(line);
+        bw.newLine();
 
       } catch (IOException e) {
         throw new RuntimeException(e);

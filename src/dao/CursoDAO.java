@@ -70,6 +70,7 @@ public class CursoDAO {
     try (OutputStream os = new FileOutputStream(filePath);
         OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         PrintWriter pw = new PrintWriter(osw, true)) {
+      System.out.println(cursoDados.getCursos());
       for(Curso c: cursoDados.getCursos()) {
         pw.println(c.getNome() + "," + c.getNivel() + "," + c.getAno());
         try {

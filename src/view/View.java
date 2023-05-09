@@ -80,7 +80,7 @@ public class View {
       System.out.println("Curso não encontrado");
       return;
     }
-    if (!(curso.getNivel().equals(Nivel.GRADUACAO))) {
+    if (!(curso.getNivel().equals(Nivel.GRADUACAO) || curso.getNivel().equals(Nivel.POS_GRADUACAO))) {
       System.out.println("Nível inválido");
       return;
     }
@@ -102,12 +102,27 @@ public class View {
     } else {
       System.out.println("Falha ao adicionar graduacao " + graduacao);
     }*/
-    Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
+    if (curso.getNivel().equals(Nivel.GRADUACAO)) {
+      Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
+      if(rendimentoDados.addRendimento(graduacao)) {
+        System.out.println("Adicionando graduacao " + graduacao);
+      } else {
+        System.out.println("Falha ao adicionar graduacao " + graduacao);
+      }
+    } else if (curso.getNivel().equals(Nivel.POS_GRADUACAO)) {
+      PosGraduacao posGraduacao = new PosGraduacao(aluno, curso, np1, np2, repo, exame);
+      if(rendimentoDados.addRendimento(posGraduacao)) {
+        System.out.println("Adicionando posGraduacao " + posGraduacao);
+      } else {
+        System.out.println("Falha ao adicionar posGraduacao " + posGraduacao);
+      }
+    }
+    /*Graduacao graduacao = new Graduacao(aluno, curso, np1, np2, repo, exame);
     if(rendimentoDados.addRendimento(graduacao)) {
       System.out.println("Adicionando graduacao " + graduacao);
     } else {
       System.out.println("Falha ao adicionar graduacao " + graduacao);
-    }
+    }*/
   }
 
   public void adicionaRendimentoPos() {
