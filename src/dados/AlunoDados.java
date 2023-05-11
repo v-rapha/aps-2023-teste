@@ -4,7 +4,7 @@ import entidades.Aluno;
 
 import java.util.*;
 
-public class Dados {
+public class AlunoDados {
   private Map<String, Aluno> alunos = new TreeMap<>();
 
   /*public Map<String, Aluno> getAlunosById() {
@@ -12,7 +12,7 @@ public class Dados {
   }*/
 
   public boolean addAluno(Aluno a) {
-    if(alunos.containsKey(a.getId())) {
+    if (alunos.containsKey(a.getId())) {
       return false;
     }
     this.alunos.put(a.getId(), a);
@@ -31,8 +31,8 @@ public class Dados {
   public List<Aluno> getAlunosByName(String keyName) {
     List<Aluno> alunosByName = new ArrayList<>();
 
-    for(Aluno a: alunos.values()) {
-      if(a.getNome().toLowerCase().contains(keyName.toLowerCase())) {
+    for (Aluno a : alunos.values()) {
+      if (a.getNome().toLowerCase().contains(keyName.toLowerCase())) {
         alunosByName.add(a);
       }
     }

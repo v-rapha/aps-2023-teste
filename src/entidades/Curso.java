@@ -40,16 +40,6 @@ public class Curso {
     this.ano = ano;
   }
 
-  // Adiciona um aluno ao curso
-  public void addAluno(Aluno aluno) {
-    this.alunos.add(aluno);
-  }
-
-  // Retorna a lista de alunos que cursaram o curso
-  public List<Aluno> getAlunos() {
-    return this.alunos;
-  }
-
   @Override
   public String toString() {
     return this.nome + "," + this.nivel + "," + this.ano;

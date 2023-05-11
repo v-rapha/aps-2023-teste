@@ -11,8 +11,6 @@ public abstract class Rendimento {
 
   protected double media;
 
-  public Rendimento() {}
-
   public Rendimento(Aluno aluno, Curso curso, double np1, double np2, double reposicao, double exame) {
     this.aluno = aluno;
     this.curso = curso;
@@ -98,12 +96,12 @@ public abstract class Rendimento {
 
   @Override
   public String toString() {
-    return this.aluno +"," +
-            this.curso +"," +
-            this.np1 +"," +
-            this.np2 +"," +
-            this.reposicao +"," +
-            this.exame +"," +
+    return this.aluno + "," +
+            this.curso + "," +
+            this.np1 + "," +
+            this.np2 + "," +
+            this.reposicao + "," +
+            this.exame + "," +
             this.aprovado;
   }
 

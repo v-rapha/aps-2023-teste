@@ -1,6 +1,5 @@
 package dados;
 
-import entidades.Graduacao;
 import entidades.Rendimento;
 
 import java.util.ArrayList;
@@ -8,17 +7,17 @@ import java.util.Collection;
 import java.util.List;
 
 public class RendimentoDados {
-  private List<Rendimento> graduacoes = new ArrayList<>();
+  private List<Rendimento> rendimentos = new ArrayList<>();
 
-  public boolean addRendimento(Rendimento g) {
-    if (g == null) {
+  public boolean addRendimento(Rendimento r) {
+    if (r == null) {
       return false;
     }
-    this.graduacoes.add(g);
+    this.rendimentos.add(r);
     return true;
   }
 
   public Collection<Rendimento> getRendimentos() {
-    return this.graduacoes;
+    return this.rendimentos;
   }
 }
