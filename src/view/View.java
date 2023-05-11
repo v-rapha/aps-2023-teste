@@ -26,7 +26,7 @@ public class View {
     this.rendimentoDados = new RendimentoDados();
     this.alunoDAO = new AlunoDAO("files/alunos.csv", this.dados);
     this.cursoDAO = new CursoDAO("files/cursos.csv", this.cursoDados);
-    this.rendimentoDAO = new RendimentoDAO(this.rendimentoDados);
+    this.rendimentoDAO = new RendimentoDAO(this.rendimentoDados, this.cursoDados, this.dados);
   }
 
   public void init(){
@@ -34,6 +34,7 @@ public class View {
     cursoDAO.loadCursos();
     r = dados.getAlunos();
     r2 = cursoDados.getCursos();
+    rendimentoDAO.loadRendimentos();
     //System.out.println("---------------" + r);
     //System.out.println("---------------" + r2);
     controller();
@@ -53,10 +54,18 @@ public class View {
         case 7: listaCursosByAno(); break;
         case 8: adicionaRendimentoGrad(); break;
         case 9: adicionaRendimentoPos(); break;
+        case 10: listaTodosRendimentos(); break;
         case 0: sair(); break;
       }
     } while(opcao != 0);
   }
+  
+  public void listaTodosRendimentos() {
+	    System.out.println("Listando todos os Rendimentos");
+	    for(Rendimento a: rendimentoDados.getRendimentos()) {
+	      System.out.println(a);
+	    }
+	  }
 
   public void adicionaRendimentoGrad() {
     Scanner in = new Scanner(System.in);
@@ -271,6 +280,7 @@ public class View {
     System.out.println("7 - encontrar curso pelo ano");
     System.out.println("8 - adicionaRendimentoGrad()");
     System.out.println("9 - adicionaRendimentoPos()");
+    System.out.println("10 - listar rendimentos");
     System.out.println("0 - para sair do programa");
     System.out.println("-----------------------");
 
