@@ -9,6 +9,7 @@ import dao.RendimentoDAO;
 import entidades.*;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class View {
   private AlunoDAO alunoDAO;
@@ -34,6 +35,7 @@ public class View {
     cursoDAO.loadCursos();
     alunos = alunoDados.getAlunos();
     cursos = cursoDados.getCursos();
+    rendimentoDAO.clearRendimentos();
     rendimentoDAO.loadRendimentos();
     controller();
   }
@@ -115,17 +117,24 @@ public class View {
   }
 
   public void listaTodosRendimentos() {
+    List<Rendimento> concatenated_list = new ArrayList<>();
+    concatenated_list.addAll(rendimentoDAO.getRendimentos());
+    concatenated_list.addAll(rendimentoDados.getRendimentos());
+    System.out.println("-----------------------------");
     System.out.println("Listando todos os Rendimentos");
-    for (Rendimento r : rendimentoDados.getRendimentos()) {
+    System.out.println("-----------------------------");
+    for (Rendimento r : concatenated_list) {
       System.out.println(r);
     }
   }
 
   public void adicionaRendimento() {
     System.out.println("Alunos cadastrados");
+    System.out.println("------------------");
     for (Aluno a : alunoDados.getAlunos()) {
       System.out.println(a);
     }
+    System.out.println("------------------");
 
     Scanner in = new Scanner(System.in);
     String idAluno = entraIdAluno();
@@ -136,13 +145,13 @@ public class View {
       return;
     }
 
-    System.out.println("Aluno selecionado: " + aluno.getNome());
+    System.out.println("Aluno selecionado: " + aluno.getNome() + "\n");
 
-    System.out.println("Cursos cadastrados");
+    System.out.println("Cursos cadastrados. Selecione o curso");
+    System.out.println("------------------");
     for (Curso c : cursoDados.getCursos()) {
       System.out.println(c);
     }
-    System.out.println("Selecione o curso");
 
     String nome = entraNomeCurso();
     Nivel nivel = entraNivelCurso();

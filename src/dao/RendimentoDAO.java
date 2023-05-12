@@ -8,6 +8,8 @@ import entidades.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RendimentoDAO {
   private String filePath;
@@ -15,28 +17,37 @@ public class RendimentoDAO {
   private CursoDAO cursoDAO;
   private RendimentoDados rendimentoDados;
   private AlunoDados alunoDados;
+  private List<Rendimento> rendimentos;
 
-  public RendimentoDAO(RendimentoDados graduacaoDados, CursoDados cursoDados, AlunoDados alunoDados) {
-    this.rendimentoDados = graduacaoDados;
+
+  public RendimentoDAO(RendimentoDados rendimentoDados, CursoDados cursoDados, AlunoDados alunoDados) {
+    this.rendimentoDados = rendimentoDados;
     this.alunoDados = alunoDados;
     this.cursoDados = cursoDados;
+    this.rendimentos = new ArrayList<>();
   }
 
   public void loadRendimentos() {
-    String path = "";
+    //String path = "";
     for (Curso c : cursoDados.getCursos()) {
-      path = "files/" + c.getNome() + "_" +
+      String path = "files/" + c.getNome() + "_" +
               c.getNivel() + "_" +
               c.getAno() + ".csv";
 
       try (InputStream is = new FileInputStream(path);
            InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
            BufferedReader br = new BufferedReader(isr)) {
+
         String linha;
         while ((linha = br.readLine()) != null) {
           String[] palavras = linha.split(",");
 
           String idAluno = palavras[0];
+
+          if (rendimentoDados.hasRendimento(idAluno)) {
+            continue; // Pula para a próxima iteração do loop
+          }
+
           Aluno aluno = alunoDados.getAlunoById(idAluno);
 
           String notaNP1 = palavras[1];
@@ -53,18 +64,20 @@ public class RendimentoDAO {
 
           if (c.getNivel().equals(Nivel.GRADUACAO)) {
             rendimento = new Graduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
-            if (rendimentoDados.addRendimento(rendimento)) {
+            rendimentos.add(rendimento);
+            /*if (rendimentoDados.addRendimento(rendimento)) {
               System.out.println("Adicionando graduacao " + rendimento);
             } else {
               System.out.println("Falha ao adicionar graduacao " + rendimento);
-            }
+            }*/
           } else if (c.getNivel().equals(Nivel.POS_GRADUACAO)) {
             rendimento = new PosGraduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
-            if (rendimentoDados.addRendimento(rendimento)) {
+            rendimentos.add(rendimento);
+            /*if (rendimentoDados.addRendimento(rendimento)) {
               System.out.println("Adicionando posGraduacao " + rendimento);
             } else {
               System.out.println("Falha ao adicionar posGraduacao " + rendimento);
-            }
+            }*/
           }
 
 
@@ -74,23 +87,26 @@ public class RendimentoDAO {
       }
     }
 
+    saveRendimentos();
   }
 
   public void saveRendimentos() {
-    String path = "";
-    for (Rendimento gs : rendimentoDados.getRendimentos()) {
-      path = "files/" + gs.getCurso().getNome() + "_" +
-              gs.getCurso().getNivel() + "_" +
-              gs.getCurso().getAno() + ".csv";
+    //List<String> arquivosProcessados = new ArrayList<>();
+    //String path = "";
+    for (Rendimento ro : rendimentoDados.getRendimentos()) {
+      String path = "files/" + ro.getCurso().getNome() + "_" +
+              ro.getCurso().getNivel() + "_" +
+              ro.getCurso().getAno() + ".csv";
+
       try (OutputStream os = new FileOutputStream(path, true);
            OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
            BufferedWriter bw = new BufferedWriter(osw)) {
 
-        String line = gs.getAluno().getId() + "," +
-                gs.getNp1() + "," +
-                gs.getNp2() + "," +
-                gs.getReposicao() + "," +
-                gs.getExame();
+        String line = ro.getAluno().getId() + "," +
+                ro.getNp1() + "," +
+                ro.getNp2() + "," +
+                ro.getReposicao() + "," +
+                ro.getExame();
         bw.write(line);
         bw.newLine();
 
@@ -98,5 +114,26 @@ public class RendimentoDAO {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  public void clearRendimentos() {
+    for (Rendimento rendimento : rendimentoDados.getRendimentos()) {
+      String path = "files/" + rendimento.getCurso().getNome() + "_" +
+              rendimento.getCurso().getNivel() + "_" +
+              rendimento.getCurso().getAno() + ".csv";
+      truncateFile(path);
+    }
+  }
+
+  private void truncateFile(String filePath) {
+    try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw")) {
+      raf.setLength(0);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public List<Rendimento> getRendimentos() {
+    return rendimentos;
   }
 }

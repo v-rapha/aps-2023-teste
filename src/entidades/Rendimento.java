@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class Rendimento {
   private Aluno aluno;
   private Curso curso;
-  private double nota, np1, np2, reposicao, exame;
+  private double np1, np2, reposicao, exame;
   private boolean aprovado;
 
   protected double media;
@@ -18,13 +18,6 @@ public abstract class Rendimento {
     this.np2 = np2;
     this.reposicao = reposicao;
     this.exame = exame;
-  }
-
-  public Rendimento(Aluno aluno, Curso curso, double nota, boolean aprovado) {
-    this.aluno = aluno;
-    this.curso = curso;
-    this.nota = nota;
-    this.aprovado = aprovado;
   }
 
   public Aluno getAluno() {
@@ -41,14 +34,6 @@ public abstract class Rendimento {
 
   public void setCurso(Curso curso) {
     this.curso = curso;
-  }
-
-  public double getNota() {
-    return nota;
-  }
-
-  public void setNota(double nota) {
-    this.nota = nota;
   }
 
   public double getNp1() {
@@ -91,8 +76,16 @@ public abstract class Rendimento {
     this.aprovado = aprovado;
   }
 
+  public double getMedia() {
+    return media;
+  }
+
+  public void setMedia(double media) {
+    this.media = media;
+  }
+
   public abstract void calcularMedia(
-          double notaNP1, double notaNP2, double notaSub, double notaExame, boolean graduacao);
+          double notaNP1, double notaNP2, double notaSub, double notaExame);
 
   @Override
   public String toString() {
@@ -102,6 +95,7 @@ public abstract class Rendimento {
             this.np2 + "," +
             this.reposicao + "," +
             this.exame + "," +
+            this.media + "," +
             this.aprovado;
   }
 

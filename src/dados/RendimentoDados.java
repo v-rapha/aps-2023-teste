@@ -20,4 +20,13 @@ public class RendimentoDados {
   public Collection<Rendimento> getRendimentos() {
     return this.rendimentos;
   }
+
+  public boolean hasRendimento(String idAluno) {
+    for (Rendimento rendimento : this.rendimentos) {
+      if (rendimento.getAluno().getId().equals(idAluno)) {
+        return true; // Rendimento encontrado
+      }
+    }
+    return false; // Rendimento não encontrado
+  }
 }
