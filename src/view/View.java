@@ -72,6 +72,9 @@ public class View {
         case 9:
           listaTodosRendimentos();
           break;
+        case 10:
+          listaRendimentoAluno();
+          break;
         case 0:
           sair();
           break;
@@ -93,6 +96,7 @@ public class View {
     System.out.println("7 - Para encontrar curso(s) pelo ano");
     System.out.println("8 - Para adicionar rendimentos");
     System.out.println("9 - Para listar todos os rendimentos");
+    System.out.println("10 - Para listar os rendimentos do aluno");
     System.out.println("0 - para sair do programa");
     System.out.println("-----------------------------------------------");
 
@@ -126,6 +130,26 @@ public class View {
     for (Rendimento r : concatenated_list) {
       System.out.println(r);
     }
+  }
+
+  public void listaRendimentoAluno() {
+    List<Rendimento> concatenated_list = new ArrayList<>();
+    concatenated_list.addAll(rendimentoDAO.getRendimentos());
+    concatenated_list.addAll(rendimentoDados.getRendimentos());
+
+    String idAluno = entraIdAluno();
+    //rendimentoDados.getRentimentosAluno(idAluno);
+    List<Rendimento> rendimentosAluno = new ArrayList<>();
+
+    for (Rendimento r: concatenated_list) {
+      //System.out.println("RendimentoDados.java " + rendimentos);
+      if (r.getAluno().getId().equals(idAluno)) {
+        System.out.println(r);
+        System.out.println("Média: " + r.getMedia());
+      }
+    }
+
+    //System.out.println(rendimentosAluno);
   }
 
   public void adicionaRendimento() {

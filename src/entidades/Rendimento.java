@@ -89,6 +89,12 @@ public abstract class Rendimento {
 
   @Override
   public String toString() {
+    String textAprovado;
+    if (this.aprovado) {
+      textAprovado = "Aprovado";
+    } else {
+      textAprovado = "Reprovado";
+    }
     return this.aluno + "," +
             this.curso + "," +
             this.np1 + "," +
@@ -96,7 +102,7 @@ public abstract class Rendimento {
             this.reposicao + "," +
             this.exame + "," +
             this.media + "," +
-            this.aprovado;
+            textAprovado;
   }
 
   /*public double calculaMedia() {
