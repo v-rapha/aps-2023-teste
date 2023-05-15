@@ -1,6 +1,7 @@
 package dados;
 
 import dao.RendimentoDAO;
+import entidades.Nivel;
 import entidades.Rendimento;
 
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class RendimentoDados {
     return rendimentosAluno;
   }*/
 
-  public boolean hasRendimento(String idAluno) {
-    for (Rendimento rendimento : this.rendimentos) {
-      if (rendimento.getAluno().getId().equals(idAluno)) {
+  public boolean hasRendimento(String idAluno, String nomeCurso, Nivel nivelCurso) {
+    for (Rendimento rendimento : this.getRendimentos()) {
+      if (rendimento.getAluno().getId().equals(idAluno) && rendimento.getCurso().getNome().equals(nomeCurso) && rendimento.getCurso().getNivel().equals(nivelCurso)) {
         return true; // Rendimento encontrado
       }
     }

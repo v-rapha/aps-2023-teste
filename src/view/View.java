@@ -19,6 +19,7 @@ public class View {
   private RendimentoDados rendimentoDados;
   private Collection<Aluno> alunos;
   private Collection<Curso> cursos;
+  private Collection<Rendimento> rendimentos;
   private RendimentoDAO rendimentoDAO;
 
   public View() {
@@ -33,10 +34,14 @@ public class View {
   public void init() {
     alunoDAO.loadAlunos();
     cursoDAO.loadCursos();
+    rendimentoDAO.loadRendimentos();
     alunos = alunoDados.getAlunos();
     cursos = cursoDados.getCursos();
-    rendimentoDAO.clearRendimentos();
-    rendimentoDAO.loadRendimentos();
+    rendimentos = rendimentoDados.getRendimentos();
+    //rendimentoDAO.clearRendimentos();
+    System.out.println(cursoDados.getCursos());
+    System.out.println(rendimentoDados.getRendimentos());
+    System.out.println(rendimentoDAO.getRendimentos());
     controller();
   }
 
@@ -75,6 +80,9 @@ public class View {
         case 10:
           listaRendimentoAluno();
           break;
+        case 11:
+          listaRendimentoCurso();
+          break;
         case 0:
           sair();
           break;
@@ -97,6 +105,7 @@ public class View {
     System.out.println("8 - Para adicionar rendimentos");
     System.out.println("9 - Para listar todos os rendimentos");
     System.out.println("10 - Para listar os rendimentos do aluno");
+    System.out.println("11 - Para listar os rendimentos do curso");
     System.out.println("0 - para sair do programa");
     System.out.println("-----------------------------------------------");
 
@@ -121,35 +130,53 @@ public class View {
   }
 
   public void listaTodosRendimentos() {
-    List<Rendimento> concatenated_list = new ArrayList<>();
-    concatenated_list.addAll(rendimentoDAO.getRendimentos());
-    concatenated_list.addAll(rendimentoDados.getRendimentos());
-    System.out.println("-----------------------------");
-    System.out.println("Listando todos os Rendimentos");
-    System.out.println("-----------------------------");
-    for (Rendimento r : concatenated_list) {
+    for (Rendimento r : rendimentoDados.getRendimentos()) {
       System.out.println(r);
     }
   }
 
   public void listaRendimentoAluno() {
-    List<Rendimento> concatenated_list = new ArrayList<>();
-    concatenated_list.addAll(rendimentoDAO.getRendimentos());
-    concatenated_list.addAll(rendimentoDados.getRendimentos());
-
     String idAluno = entraIdAluno();
-    //rendimentoDados.getRentimentosAluno(idAluno);
-    List<Rendimento> rendimentosAluno = new ArrayList<>();
+    List<Rendimento> rend = new ArrayList<>();
 
-    for (Rendimento r: concatenated_list) {
-      //System.out.println("RendimentoDados.java " + rendimentos);
+    for (Rendimento r : rendimentoDados.getRendimentos()) {
       if (r.getAluno().getId().equals(idAluno)) {
-        System.out.println(r);
-        System.out.println("Média: " + r.getMedia());
+        rend.add(r);
       }
     }
 
-    //System.out.println(rendimentosAluno);
+    if (rend.size() != 0) {
+      for (Rendimento r : rend) {
+        System.out.println(r);
+        System.out.println("Média: " + r.getMedia());
+      }
+    } else {
+      System.out.println("Não há rendimentos para o aluno de Id " + idAluno);
+    }
+  }
+
+  public void listaRendimentoCurso() {
+    String nome = entraNomeCurso();
+    Nivel nivel = entraNivelCurso();
+    int ano = entraAnoCurso();
+
+    List<Rendimento> rend = new ArrayList<>();
+
+    for (Rendimento r : rendimentoDados.getRendimentos()) {
+      if (r.getCurso().getNome().equals(nome) && r.getCurso().getNivel().equals(nivel) && r.getCurso().getAno() == ano) {
+        rend.add(r);
+      }
+    }
+
+    if (rend.size() != 0) {
+      for (Rendimento r : rend) {
+        System.out.println(r);
+        System.out.println("Média: " + r.getMedia());
+      }
+    } else {
+      System.out.println("Não há rendimentos para o curso " + nome);
+    }
+
   }
 
   public void adicionaRendimento() {

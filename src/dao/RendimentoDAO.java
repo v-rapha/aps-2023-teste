@@ -8,17 +8,13 @@ import entidades.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RendimentoDAO {
-  private String filePath;
   private CursoDados cursoDados;
-  private CursoDAO cursoDAO;
   private RendimentoDados rendimentoDados;
   private AlunoDados alunoDados;
   private List<Rendimento> rendimentos;
-
 
   public RendimentoDAO(RendimentoDados rendimentoDados, CursoDados cursoDados, AlunoDados alunoDados) {
     this.rendimentoDados = rendimentoDados;
@@ -44,9 +40,6 @@ public class RendimentoDAO {
 
           String idAluno = palavras[0];
 
-          if (rendimentoDados.hasRendimento(idAluno)) {
-            continue; // Pula para a próxima iteração do loop
-          }
 
           Aluno aluno = alunoDados.getAlunoById(idAluno);
 
@@ -60,25 +53,32 @@ public class RendimentoDAO {
           double reposicaoParse = Double.parseDouble(notaReposicao);
           double exameParse = Double.parseDouble(notaExame);
 
-          Rendimento rendimento;
+          //Rendimento rendimento;
 
-          if (c.getNivel().equals(Nivel.GRADUACAO)) {
-            rendimento = new Graduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
-            rendimentos.add(rendimento);
-            /*if (rendimentoDados.addRendimento(rendimento)) {
+          Rendimento rendimento1 = new Graduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
+          if (rendimentoDados.hasRendimento(idAluno, rendimento1.getCurso().getNome(), rendimento1.getCurso().getNivel())) {
+            continue;// Pula para a próxima iteração do loop
+          }
+          rendimentoDados.addRendimento(rendimento1);
+          Rendimento rendimento2 = new PosGraduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
+          if (rendimentoDados.hasRendimento(idAluno, rendimento2.getCurso().getNome(), rendimento2.getCurso().getNivel())) {
+            continue;
+          }
+          rendimentoDados.addRendimento(rendimento2);
+
+          /*if (c.getNivel().equals(Nivel.GRADUACAO)) {
+           *//*if (rendimentoDados.addRendimento(rendimento)) {
               System.out.println("Adicionando graduacao " + rendimento);
             } else {
               System.out.println("Falha ao adicionar graduacao " + rendimento);
-            }*/
+            }*//*
           } else if (c.getNivel().equals(Nivel.POS_GRADUACAO)) {
-            rendimento = new PosGraduacao(aluno, c, np1Parse, np2Parse, reposicaoParse, exameParse);
-            rendimentos.add(rendimento);
-            /*if (rendimentoDados.addRendimento(rendimento)) {
+            *//*if (rendimentoDados.addRendimento(rendimento)) {
               System.out.println("Adicionando posGraduacao " + rendimento);
             } else {
               System.out.println("Falha ao adicionar posGraduacao " + rendimento);
-            }*/
-          }
+            }*//*
+          }*/
 
 
         }
@@ -86,11 +86,54 @@ public class RendimentoDAO {
         throw new RuntimeException(e);
       }
     }
-
-    saveRendimentos();
   }
 
-  public void saveRendimentos() {
+  /*public void saveRendimentos() {
+    Map<String, StringBuilder> conteudoPorArquivo = new HashMap<>();
+
+    for (Rendimento ro : rendimentoDados.getRendimentos()) {
+      String path = "files/" + ro.getCurso().getNome() + "_" +
+              ro.getCurso().getNivel() + "_" +
+              ro.getCurso().getAno() + ".csv";
+
+      String line = ro.getAluno().getId() + "," +
+              ro.getNp1() + "," +
+              ro.getNp2() + "," +
+              ro.getReposicao() + "," +
+              ro.getExame();
+
+      if (!conteudoPorArquivo.containsKey(path)) {
+        conteudoPorArquivo.put(path, new StringBuilder());
+      }
+
+      StringBuilder conteudo = conteudoPorArquivo.get(path);
+      conteudo.append(line).append("\n");
+    }
+
+    for (Map.Entry<String, StringBuilder> entry : conteudoPorArquivo.entrySet()) {
+      String path = entry.getKey();
+      StringBuilder conteudo = entry.getValue();
+
+      try (OutputStream os = new FileOutputStream(path, true);
+           OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+           BufferedWriter bw = new BufferedWriter(osw)) {
+
+        String conteudoExistente = conteudo.toString();
+
+        if (conteudoExistente.isEmpty() || !conteudoExistente.equals(conteudo.toString())) {
+          bw.write(conteudo.toString());
+        }
+
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }*/
+
+
+  /*public void saveRendimentos() {
+    //Dados únicos por arquivo
+    Map<String, List<Rendimento>> rendimentosPorArquivo = new HashMap<>();
     //List<String> arquivosProcessados = new ArrayList<>();
     //String path = "";
     for (Rendimento ro : rendimentoDados.getRendimentos()) {
@@ -98,38 +141,88 @@ public class RendimentoDAO {
               ro.getCurso().getNivel() + "_" +
               ro.getCurso().getAno() + ".csv";
 
-      try (OutputStream os = new FileOutputStream(path, true);
+      if (!rendimentosPorArquivo.containsKey(path)) {
+        rendimentosPorArquivo.put(path, new ArrayList<>());
+      }
+
+      List<Rendimento> rendimentos = rendimentosPorArquivo.get(path);
+      rendimentos.add(ro);
+    }
+    //System.out.println("MAP 158 rendimentosPorArquivo " + rendimentosPorArquivo);
+
+      //truncateFile(path);
+    for (Map.Entry<String, List<Rendimento>> entry: rendimentosPorArquivo.entrySet()) {
+      String path = entry.getKey();
+      List<Rendimento> rendimentos = entry.getValue();
+
+      try (OutputStream os = new FileOutputStream(path, false);
            OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
            BufferedWriter bw = new BufferedWriter(osw)) {
 
-        String line = ro.getAluno().getId() + "," +
-                ro.getNp1() + "," +
-                ro.getNp2() + "," +
-                ro.getReposicao() + "," +
-                ro.getExame();
-        bw.write(line);
-        bw.newLine();
+        for (Rendimento ro: rendimentos) {
+          String line = ro.getAluno().getId() + "," +
+                  ro.getNp1() + "," +
+                  ro.getNp2() + "," +
+                  ro.getReposicao() + "," +
+                  ro.getExame();
+          bw.write(line);
+          bw.newLine();
+        }
 
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
-  }
+  }*/
 
-  public void clearRendimentos() {
-    for (Rendimento rendimento : rendimentoDados.getRendimentos()) {
-      String path = "files/" + rendimento.getCurso().getNome() + "_" +
-              rendimento.getCurso().getNivel() + "_" +
-              rendimento.getCurso().getAno() + ".csv";
-      truncateFile(path);
+  public void saveRendimentos() {
+    Map<String, StringBuilder> conteudoPorArquivo = new HashMap<>();
+
+    for (Rendimento ro : rendimentoDados.getRendimentos()) {
+      String path = "files/" + ro.getCurso().getNome() + "_" +
+              ro.getCurso().getNivel() + "_" +
+              ro.getCurso().getAno() + ".csv";
+
+      String line = ro.getAluno().getId() + "," +
+              ro.getNp1() + "," +
+              ro.getNp2() + "," +
+              ro.getReposicao() + "," +
+              ro.getExame();
+
+      if (!conteudoPorArquivo.containsKey(path)) {
+        conteudoPorArquivo.put(path, new StringBuilder());
+      }
+
+      StringBuilder conteudo = conteudoPorArquivo.get(path);
+      conteudo.append(line).append("\n");
     }
-  }
 
-  private void truncateFile(String filePath) {
-    try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw")) {
-      raf.setLength(0);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    for (Map.Entry<String, StringBuilder> entry : conteudoPorArquivo.entrySet()) {
+      String path = entry.getKey();
+      StringBuilder conteudo = entry.getValue();
+
+      try (BufferedReader reader = new BufferedReader(new FileReader(path));
+           BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+
+        Set<String> linhasExistentes = new HashSet<>();
+        String linha;
+
+        // Ler as linhas existentes no arquivo
+        while ((linha = reader.readLine()) != null) {
+          linhasExistentes.add(linha);
+        }
+
+        // Adicionar apenas as novas linhas ao arquivo
+        for (String novaLinha : conteudo.toString().split("\n")) {
+          if (!linhasExistentes.contains(novaLinha)) {
+            writer.write(novaLinha);
+            writer.newLine();
+          }
+        }
+
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
