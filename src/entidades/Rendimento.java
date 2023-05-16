@@ -1,8 +1,5 @@
 package entidades;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Rendimento {
   private Aluno aluno;
   private Curso curso;
@@ -89,12 +86,6 @@ public abstract class Rendimento {
 
   @Override
   public String toString() {
-    String textAprovado;
-    if (this.aprovado) {
-      textAprovado = "Aprovado";
-    } else {
-      textAprovado = "Reprovado";
-    }
     return this.aluno + "," +
             this.curso + "," +
             this.np1 + "," +
@@ -102,36 +93,6 @@ public abstract class Rendimento {
             this.reposicao + "," +
             this.exame + "," +
             this.media + "," +
-            textAprovado;
+            (this.aprovado ? "Aprovado" : "Reprovado");
   }
-
-  /*public double calculaMedia() {
-    double mediaI = getMediaNivel();
-    //double maiorNota = 0;
-    double mediaInicial = 0;
-    double mediaFinal = 0;
-
-    if (this.reposicao > this.np1) {
-      //maiorNota = reposicao;
-      mediaInicial = (reposicao + np2) / 2;
-    } else if (this.reposicao > this.np2) {
-      //maiorNota = reposicao;
-      mediaInicial = (np1 + reposicao) / 2;
-    }
-
-    if (mediaInicial >= mediaI) {
-      this.media = mediaInicial;
-      this.aprovado = true;
-    } else {
-      mediaFinal = (mediaInicial + this.exame) / 2;
-      if (mediaFinal >= 5) {
-        this.media = mediaFinal;
-        this.aprovado = true;
-      } else {
-        this.media = mediaFinal;
-        this.aprovado = false;
-      }
-    }
-    return 0;
-  }*/
 }

@@ -1,6 +1,5 @@
 package dados;
 
-import dao.RendimentoDAO;
 import entidades.Nivel;
 import entidades.Rendimento;
 

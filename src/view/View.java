@@ -1,15 +1,17 @@
 package view;
 
-import dados.CursoDados;
 import dados.AlunoDados;
+import dados.CursoDados;
 import dados.RendimentoDados;
 import dao.AlunoDAO;
 import dao.CursoDAO;
 import dao.RendimentoDAO;
 import entidades.*;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Scanner;
 
 public class View {
   private AlunoDAO alunoDAO;
@@ -38,10 +40,6 @@ public class View {
     alunos = alunoDados.getAlunos();
     cursos = cursoDados.getCursos();
     rendimentos = rendimentoDados.getRendimentos();
-    //rendimentoDAO.clearRendimentos();
-    System.out.println(cursoDados.getCursos());
-    System.out.println(rendimentoDados.getRendimentos());
-    System.out.println(rendimentoDAO.getRendimentos());
     controller();
   }
 
@@ -147,8 +145,12 @@ public class View {
 
     if (rend.size() != 0) {
       for (Rendimento r : rend) {
-        System.out.println(r);
+        System.out.println("Aluno: " + r.getAluno().getNome() + " | RA: " + r.getAluno().getId());
+        System.out.println("Curso: " + r.getCurso().getNome() + " | Nivel: " + r.getCurso().getNivel() + " | Ano: " + r.getCurso().getAno());
+        System.out.println("Notas: " + "NP1: " + r.getNp1() + " | NP2: " + r.getNp2() + " | Reposicao: " + r.getReposicao() + " | Exame: " + r.getExame());
         System.out.println("Média: " + r.getMedia());
+        System.out.println("Situação: " + (r.isAprovado() ? "Aprovado" : "Reprovado"));
+        System.out.println("-------------------------------------------\n");
       }
     } else {
       System.out.println("Não há rendimentos para o aluno de Id " + idAluno);
@@ -161,18 +163,27 @@ public class View {
     int ano = entraAnoCurso();
 
     List<Rendimento> rend = new ArrayList<>();
+    double mediaCurso = 0;
+    int count = 0;
 
     for (Rendimento r : rendimentoDados.getRendimentos()) {
       if (r.getCurso().getNome().equals(nome) && r.getCurso().getNivel().equals(nivel) && r.getCurso().getAno() == ano) {
         rend.add(r);
+        mediaCurso += r.getMedia();
+        count++;
       }
     }
 
     if (rend.size() != 0) {
       for (Rendimento r : rend) {
-        System.out.println(r);
+        System.out.println("Aluno: " + r.getAluno().getNome() + " | RA: " + r.getAluno().getId());
+        System.out.println("Curso: " + r.getCurso().getNome() + " | Nivel: " + r.getCurso().getNivel() + " | Ano: " + r.getCurso().getAno());
+        System.out.println("Notas: " + "NP1: " + r.getNp1() + " | NP2: " + r.getNp2() + " | Reposicao: " + r.getReposicao() + " | Exame: " + r.getExame());
         System.out.println("Média: " + r.getMedia());
+        System.out.println("Situação: " + (r.isAprovado() ? "Aprovado" : "Reprovado"));
+        System.out.println("-------------------------------------------\n");
       }
+      System.out.printf("Média do curso: " + String.format("%.2f", (mediaCurso / count)));
     } else {
       System.out.println("Não há rendimentos para o curso " + nome);
     }
@@ -183,7 +194,7 @@ public class View {
     System.out.println("Alunos cadastrados");
     System.out.println("------------------");
     for (Aluno a : alunoDados.getAlunos()) {
-      System.out.println(a);
+      System.out.println("Aluno: " + a.getNome() + " | RA: " + a.getId());
     }
     System.out.println("------------------");
 
@@ -201,7 +212,7 @@ public class View {
     System.out.println("Cursos cadastrados. Selecione o curso");
     System.out.println("------------------");
     for (Curso c : cursoDados.getCursos()) {
-      System.out.println(c);
+      System.out.println("Curso: " + c.getNome() + " | Nivel: " + c.getNivel() + " | Ano: " + c.getAno());
     }
 
     String nome = entraNomeCurso();
@@ -259,7 +270,7 @@ public class View {
   public void listaTodosCursos() {
     System.out.println("Listando todos os cursos");
     for (Curso c : cursoDados.getCursos()) {
-      System.out.println(c);
+      System.out.println("Curso: " + c.getNome() + " | Nivel: " + c.getNivel() + " | Ano: " + c.getAno());
     }
   }
 
@@ -276,7 +287,7 @@ public class View {
     }
     System.out.println(cursos.size() + " cursos encontrados");
     for (Curso c : cursos) {
-      System.out.println(c);
+      System.out.println("Curso: " + c.getNome() + " | Nivel: " + c.getNivel() + " | Ano: " + c.getAno());
     }
     System.out.println();
   }
@@ -348,7 +359,7 @@ public class View {
   public void listaTodosAlunos() {
     System.out.println("Listando todos os alunos");
     for (Aluno a : alunoDados.getAlunos()) {
-      System.out.println(a);
+      System.out.println("Aluno: " + a.getNome() + " | RA: " + a.getId());
     }
   }
 
@@ -358,7 +369,7 @@ public class View {
   }
 
   public void listaAlunosByNome(String keyNome) {
-    System.out.println("Listando todos os alunos contendo o nome: \" " + keyNome + "\"");
+    System.out.println("Listando todos os alunos contendo o nome: \"" + keyNome + "\"");
 
     Collection<Aluno> alunos = alunoDados.getAlunosByName(keyNome);
     if (alunos.size() == 0) {
@@ -367,7 +378,7 @@ public class View {
 
     System.out.println(" " + alunos.size() + " alunos encontrados");
     for (Aluno a : alunos) {
-      System.out.println(a);
+      System.out.println("Aluno: " + a.getNome() + " | RA: " + a.getId());
     }
     System.out.println();
   }
@@ -384,7 +395,7 @@ public class View {
       System.out.println("Aluno não encontrado");
     } else {
       System.out.println("Aluno encontrado:");
-      System.out.println(a);
+      System.out.println("Aluno: " + a.getNome() + " | RA: " + a.getId());
     }
   }
 

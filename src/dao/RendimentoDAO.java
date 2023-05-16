@@ -1,26 +1,26 @@
 package dao;
 
-import dados.CursoDados;
 import dados.AlunoDados;
+import dados.CursoDados;
 import dados.RendimentoDados;
 import entidades.*;
 
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class RendimentoDAO {
   private CursoDados cursoDados;
   private RendimentoDados rendimentoDados;
   private AlunoDados alunoDados;
-  private List<Rendimento> rendimentos;
 
   public RendimentoDAO(RendimentoDados rendimentoDados, CursoDados cursoDados, AlunoDados alunoDados) {
     this.rendimentoDados = rendimentoDados;
     this.alunoDados = alunoDados;
     this.cursoDados = cursoDados;
-    this.rendimentos = new ArrayList<>();
   }
 
   public void loadRendimentos() {
@@ -224,9 +224,5 @@ public class RendimentoDAO {
         throw new RuntimeException(e);
       }
     }
-  }
-
-  public List<Rendimento> getRendimentos() {
-    return rendimentos;
   }
 }
